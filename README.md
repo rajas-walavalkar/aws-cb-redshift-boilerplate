@@ -18,7 +18,7 @@ Amazon Redshift is an enterprise wide secured, fully managed & scalable Data War
 ## **PRE-REQUESITES**
 1. Please make sure that you have following pre-requisites full filled before starting with this hands-on session 
 2. You need to have admin access to the AWS account to follow the steps mentioned below
-3. Download the dataset from the Kaggle form here. For this you will have to sign-in into your Kaggle account.
+3. Download the dataset from the Kaggle form [here](https://www.kaggle.com/competitions/nyc-taxi-trip-duration/data). For this you will have to sign-in into your Kaggle account.
 4. Follow the section of Create IAM role as a part of Pre-requisites 
 5. Follow the section of create an S3 bucket and uploading CSV datafiles which will be required while creating tables on Redshift
 
@@ -42,6 +42,7 @@ Before we go ahead and create a Redshift cluster lets first create an IAM role w
 
 Congratulations! You have created your IAM role for the Redshift Cluster. Now lets proceed to create a Redshift cluster.
 
+
 #### **CREATE S3 BCUKET TO SAVE CSV DATA FILES**
 
 1. Open the S3 console on your AWS Account and then click on _**Create Bucket**_ button and fill in the following details for the same
@@ -57,6 +58,7 @@ Congratulations! You have created your IAM role for the Redshift Cluster. Now le
   - **_NOTE: It might take a couple of minutes to upload the file, as the size of the file is ~193 MB._**
 
 If you are following till this point then, Congratulations!! You have completed the required pre-requisites part for this hands-on session now we can start with Redshift part
+
 
 ### **CREATE A REDSHIFT CLUSTER**
 
@@ -81,7 +83,8 @@ If you are following till this point then, Congratulations!! You have completed 
 ![image](https://user-images.githubusercontent.com/17497381/166977162-5c6a4871-0378-492c-a6f7-608a4132ecc6.png)
 
 
-### **CREATE TABLE & LOAD DATA ON REDSHIFT CLUSTER**
+### **CREATE TABLE & LOAD DATA ON REDSHIFT CLUSTER
+
 1. Before you start creating tables, lets just connect to the Redshift cluster using _**Query Editor V2**_. For that click on the Query Editor V2 in the Right hand side panel on the Redshift console.
 
 2. This will open up a new tab and you will see the _**Redshift query editor v2**_. On this editor you will see the redshift cluster which we created in the right-hand side Database section.
@@ -120,6 +123,7 @@ IGNOREHEADER 1 ;
 6. After the COPY command is successfully executed, just the check the sample table records if they are properly inserted into the table using a Select * query
 ![image](https://user-images.githubusercontent.com/17497381/166978180-119961e7-7372-46d5-ab3a-f93cba6fec48.png)
 
+
 ### **LETS CREATE TABLE USING VISUAL EDITOR**
 
 1. Before we create the table using the visual editor 2, lets just drop the table which is already created using the DROP command
@@ -147,6 +151,7 @@ DROP TABLE dev.public.taxi_rides;
 ![image](https://user-images.githubusercontent.com/17497381/166979051-820699b0-db0a-4ba8-81c8-223317550e46.png)
 
 9. Once the the command successfully completes then just check the data inserted into the table using SELECT * query
+
 
 ### **CTAS - Create Table AS Query and UNLOAD command**
 
@@ -181,6 +186,7 @@ CSV;
 4. Once the command executes, you can check your S3 bucket location, you will be able to see the files as shown below
 ![image](https://user-images.githubusercontent.com/17497381/166980031-df7a3264-e879-4d2d-97e1-c601d254b44e.png)
 
+
 ### **MATERIALIZED VIEWS**
 
 1. Lets create an materialized view instead of the CTAS table that we created in the previous step. The Syntax is very similar to CTAS query.
@@ -203,3 +209,12 @@ _NOTE : Here if you see that I am using the exact same query which we used in th
 ![image](https://user-images.githubusercontent.com/17497381/166980294-95e6d36b-1014-4310-a6d7-65f652d75514.png)
 
 3. Further let's say that the original table gets in the new incremental data and loads it into our _**taxi_rides**_ table, so our materialized view data becomes stale and inconsistent. So in this situation, you can refresh the materialized view using a simple query mentioned below or you can use a [**Automated refresh materialized view**](https://docs.aws.amazon.com/redshift/latest/dg/materialized-view-auto-mv.html)
+```
+REFRESH MATERIALIZED VIEW dev.public.mv_date_hour_agg_trips;
+```
+
+## CONCLUSION
+
+Thus this blog covers the basics of Amazon Redshift and how do you work with Redshift starting from the creation of cluster to the tables and views. Its a very basic blog which will act as a boiler plate for the new users who are working with Amazon Redshift for the first time.
+
+Once you are well versed with these queries and commands you can get into the depth of the configuration of each and ever command to the query used in this blog. I hope that this blog has helped you to see how easy it is to work with Amazon Redshift service. Happy Learning and Let me know if you have suggestions, feedbacks or questions in the comments section below.
