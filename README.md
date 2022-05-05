@@ -130,7 +130,6 @@ IGNOREHEADER 1 ;
 ```
 DROP TABLE dev.public.taxi_rides;
 ```
-
 2. Click on the **+ Create** button on the left side panel and then select _**Table**_ option from the list.
 ![image](https://user-images.githubusercontent.com/17497381/166978385-408e8912-dfe2-4a84-a7f6-fe620d6f4a03.png)
 
@@ -170,7 +169,6 @@ Where  DATE(pickup_datetime)=DATE(dropoff_datetime)
 Group by 1,2
 Order by 1,2
 ```
-
 2. Once you RUN  the above query it will give you the following table output
 ![image](https://user-images.githubusercontent.com/17497381/166979885-7b312a15-74f0-4354-ae1d-600efb1648b8.png)
 
@@ -182,7 +180,6 @@ iam_role 'arn:aws:iam::284377223922:role/Redshift-IAM-Role-1'
 HEADER
 CSV;
 ```
-
 4. Once the command executes, you can check your S3 bucket location, you will be able to see the files as shown below
 ![image](https://user-images.githubusercontent.com/17497381/166980031-df7a3264-e879-4d2d-97e1-c601d254b44e.png)
 
