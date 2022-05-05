@@ -28,6 +28,16 @@ Before we go ahead and create a Redshift cluster lets first create an IAM role w
 
 ![image](https://user-images.githubusercontent.com/17497381/166972604-23fa1051-1b66-4766-837b-226a43474628.png)
 
-2. In the Use cases for other AWS services select Redshift from the drop down list. Then click on the Redshift - Customizable radio button and then click on Next.
+2. In the _**Use cases for other AWS services**_ select Redshift from the drop down list. Then click on the _**Redshift - Customizable**_ radio button and then click on _**Next**_.
 
 ![image](https://user-images.githubusercontent.com/17497381/166972664-1baf4a4f-f5ef-4705-a1e9-d84df717adc8.png)
+
+3. In the Add permission section, search for _**AmazonRedshiftAllCommandsFullAccess**_ policy. Its an AWS Managed policy so it will be a part of each AWS account. Select this policy and click on _**Next**_
+
+![image](https://user-images.githubusercontent.com/17497381/166973961-9a2210a3-4df5-4b43-85a1-f14f5fefdd4f.png)
+
+4. On the next page just provide _**Redshift-IAM-Role-1**_ as the name for the IAM role and then click on _**Create Role**_ button.
+
+Congratulations! You have created your IAM role for the Redshift Cluster. Now lets proceed to create a Redshift cluster.
+
+**CREATE S3 BCUKET TO SAVE CSV DATA FILES**
