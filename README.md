@@ -66,12 +66,12 @@ If you are following till this point then, Congratulations!! You have completed 
 ![image](https://user-images.githubusercontent.com/17497381/166976531-4f32b270-6a4f-4c85-93b7-fa536080a3b2.png)
 
 2. Please fill in the following configurations details on this page
-  - Cluster identifier - **redshift-cluster-1**
-  - What are you planning to use this cluster for? - Select **Production**
-  - Node Type - **dc2.large**
-  - Number of Nodes - **1**
-  - Admin user name - **test-user**
-  - Admin user password - **Password1234**
+    - Cluster identifier - **redshift-cluster-1**
+    - What are you planning to use this cluster for? - Select **Production**
+    - Node Type - **dc2.large**
+    - Number of Nodes - **1**
+    - Admin user name - **test-user**
+    - Admin user password - **Password1234**
 
 3. In the Associated IAM roles section, click on _**Associated IAM role**_ button and then select the IAM role which created previously _**Redshift-IAM-Role-1**_ and then click on Associated IAM role button.
 ![image](https://user-images.githubusercontent.com/17497381/166977009-2516b6c6-6428-427e-93dd-6eb719ed26fa.png)
