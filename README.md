@@ -1,5 +1,5 @@
 # aws-cb-redshift-boilerplate
-This repository provides a good starting point for Amazon Redshift hands-on activity
+This repository provides a good starting point for Amazon Redshift by giving a complete end to end hands-on activity which you can try out on personal AWS account. Follow through the steps mentiooned below carefully to become master of Aamzon Redshift
 
 ## **INTRODUCTION**
 
@@ -218,3 +218,13 @@ REFRESH MATERIALIZED VIEW dev.public.mv_date_hour_agg_trips;
 Thus this blog covers the basics of Amazon Redshift and how do you work with Redshift starting from the creation of cluster to the tables and views. Its a very basic blog which will act as a boiler plate for the new users who are working with Amazon Redshift for the first time.
 
 Once you are well versed with these queries and commands you can get into the depth of the configuration of each and ever command to the query used in this blog. I hope that this blog has helped you to see how easy it is to work with Amazon Redshift service. Happy Learning and Let me know if you have suggestions, feedbacks or questions in the comments section below.
+
+## REFERENCES
+
+#### 1. [Link to AWS Documentation - Query Editor V2](https://aws.amazon.com/blogs/aws/amazon-redshift-query-editor-v2-web-query-authoring/)
+#### 2. [Link to AWS Documentation - COPY Command](https://docs.aws.amazon.com/redshift/latest/dg/r_COPY.html)
+#### 3. [Link to AWS Documentation - UNLOAD Command](https://docs.aws.amazon.com/redshift/latest/dg/r_UNLOAD.html)
+#### 4. [Link to AWS Documentation - Create Table AS Query (CTAS Query)](https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_TABLE_AS.html)
+#### 5. [Link to AWS Documentation - Create Materialized Views](https://docs.aws.amazon.com/redshift/latest/dg/materialized-view-create-sql-command.html)
+#### 6. [Link to AWS Documentation - Limitations and Refresh Views](https://docs.aws.amazon.com/redshift/latest/dg/materialized-view-refresh-sql-command.html)
+#### 7. [Link to AWS Documentation - Auto Materialized Views](https://docs.aws.amazon.com/redshift/latest/dg/materialized-view-auto-mv.html)
