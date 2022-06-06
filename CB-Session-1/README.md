@@ -1,5 +1,5 @@
-# aws-cb-redshift-boilerplate
-This repository provides a good starting point for Amazon Redshift by giving a complete end to end hands-on activity which you can try out on personal AWS account. Follow through the steps mentiooned below carefully to become master of Aamzon Redshift
+# aws-cb-redshift-boilerplate : Session 1
+This folder is the first session which provides a good starting point for Amazon Redshift by giving a complete end to end hands-on activity which you can try out on personal AWS account. Follow through the steps mentiooned below carefully to become master of Aamzon Redshift
 
 ## **INTRODUCTION**
 
