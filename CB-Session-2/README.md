@@ -52,24 +52,40 @@ Please make sure that you have following pre-requisites full filled before start
 
 ![image](https://user-images.githubusercontent.com/17497381/172200689-4084ab3f-6004-47e7-80f1-1342ae4271ef.png)
 
-Congratulations! You have created populated the **Glue Data Catalog** with the external table stored on S3 bucket 
+Congratulations! You have populated the **Glue Data Catalog** with the external table stored on S3 bucket 
 
 
-#### **CREATE S3 BCUKET TO SAVE CSV DATA FILES**
+#### **CREATE EXTERNAL TABLE (SPECTRUM TABLE) ON REDSHIFT CLUSTER**
 
-1. Open the S3 console on your AWS Account and then click on _**Create Bucket**_ button and fill in the following details for the same
-  - Bucket Name - **aws-redshift-raw-csv**
-    - _Note: You might not be able to give the same name to the S3 bucket which I have given, this is because the name of S3 bucket should be globally unique. So please give any name which works for you._
-  - AWS Region - **US EAST N. Virginia (us-east-1)**
-  - Keep all the other options default and just click on _**Create Bucket**_
+1. Before we create the Redshift external table, we will have to update the IAM role which we created in our previous Session by adding two more IAM policies. Goto the IAM console and find the IAM role named as __**Redshift-IAM-Role-1**__ and then click on __**Add Permission**__, Search for two IAM policies __**AWSGlueConsoleFullAccess**__ & __**AmazonS3ReadOnlyAccess**__ and then click on **Attach Policies**. These IAM roles will provide the Redshift cluster to access the AWS GLue Catalog and the S3 bucket.
+
+2. Open the Redshift console on your AWS Account and then start the Redshift cluster which you had created in the CB-Session-1. Once the cluster is in running state, then open the visual editor 2 from the console and then connect to the Redshift cluster.
+
+![image](https://user-images.githubusercontent.com/17497381/172207259-8a641f3f-08e2-4c82-b524-b6512232963c.png)
  
- 2. Once the S3 bucket is created, then click on the bucket and then  create a folder inside the bucket named as _**nyc-dataset**_ and click on the _**Create Folder**_ button.
-![image](https://user-images.githubusercontent.com/17497381/166975802-6077062e-ce13-4c88-9b63-8f00badfd46f.png)
+3. Once you are connected to your Redshift cluster, then run the following command in the query editor to create an external schema which is ppinting towards AWS Glue Catalog.
 
-3. Once the folder is created then click on the folder and upload the _**train.csv**_ file obtained from the Kaggle link provided in the pre-requisites section Step 2 
-  - **_NOTE: It might take a couple of minutes to upload the file, as the size of the file is ~193 MB._**
+```
+CREATE EXTERNAL SCHEMA rs_glue_schema FROM DATA CATALOG 
+DATABASE 'rs-lat-long-database' 
+iam_role 'arn:aws:iam::284377223972:role/Redshift-IAM-Role-1' 
+region 'us-east-1';
+```
 
-If you are following till this point then, Congratulations!! You have completed the required pre-requisites part for this hands-on session now we can start with Redshift part
+4. Once you run the query which created the external schema, just the refresh the Schema pannel and then you will be able to see the table which we created in our previous step using a Glue Crawler
+
+![image](https://user-images.githubusercontent.com/17497381/172211594-840b3ff7-a9ff-413b-82e0-c613c4c6f3ab.png)
+
+5. Lets check whether we are able to query the data which is present in the S3 bucket from the Redshift cluster using the Glue external Catalog. Once you run the following query you should see the following table
+
+```
+SELECT * FROM rs_glue_schema.nyc_latlong_mapping;
+```
+
+![image](https://user-images.githubusercontent.com/17497381/172212341-1c45393f-94fb-4e61-b276-2e2f82e3c2fa.png)
+
+
+If you are following till this point then, Congratulations! You have successfully created a Redshift Spectrum Table using External **Glue Data Catalog** for the data stored on S3 bucket 
 
 
 ### **CREATE A REDSHIFT CLUSTER**
