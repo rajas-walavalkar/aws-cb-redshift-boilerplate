@@ -20,29 +20,39 @@ Amazon Redshift is an enterprise wide secured, fully managed & scalable Data War
 Please make sure that you have following pre-requisites full filled before starting with this hands-on session 
 1. Please go through the Session 1 Lab manual and then start refering to this lab manual as couple of foundational things are already taken care in the presvious sessions Lab manual
 2. You need to have admin access to the AWS account to follow the steps mentioned below
-3. Download the dataset from the Kaggle form [here](https://www.kaggle.com/competitions/nyc-taxi-trip-duration/data). For this you will have to sign-in into your Kaggle account.
+3. Download the dataset from the github repo from the **CB-Session-2** in the dataset folder and push it to an S3 bucket
 4. Follow the section of Create IAM role as a part of Pre-requisites 
 5. Follow the section of create an S3 bucket and uploading CSV datafiles which will be required while creating tables on Redshift
 
-#### **CREATE IAM ROLE**
+#### **CREATE A GLUE CRAWLER FOR THE S3 DATASET**
 
-Before we go ahead and create a Redshift cluster lets first create an IAM role which we will need while creating a Redshift cluster. Please follow the setps mentioned below
+1. Go to the IAM console in you AWS account. Search for Glue service which will open up the Glue console. The click on the Crawler link in the left hand side pannel
 
-1. Go to the IAM console in you AWS account. Click on Roles from the right hand side panel and then click on Create Role button
+![image](https://user-images.githubusercontent.com/17497381/172198319-388e026b-2e6a-41e5-af99-654b2907a9a7.png)
 
-![image](https://user-images.githubusercontent.com/17497381/166972604-23fa1051-1b66-4766-837b-226a43474628.png)
+2. Then click on _**Add Crawler**_. After that provide the following information to configure the Glue Crawler
+- Crawler Name : **crawl-s3-latlong-metadata**
+- Choose a data store : **S3**
+- In Include s3 path select the path where the **latlong-mapping.csv** is uploaded
+- IAM Role : specify the role name of the new IAM role AWSGlueS3Role
+- Frequency : Select **Run on Demand**
+- Click on Add Database : **rs-lat-long-database**
 
-2. In the _**Use cases for other AWS services**_ select Redshift from the drop down list. Then click on the _**Redshift - Customizable**_ radio button and then click on _**Next**_.
+![image](https://user-images.githubusercontent.com/17497381/172199564-5a97c7f2-cb0e-44da-a356-35e7d2857ee7.png)
+![image](https://user-images.githubusercontent.com/17497381/172199679-389f182b-c963-493a-b5f1-7f0795062e4c.png)
+![image](https://user-images.githubusercontent.com/17497381/172199843-4f387300-043f-4979-b6db-f68f7d75c000.png)
 
-![image](https://user-images.githubusercontent.com/17497381/166972664-1baf4a4f-f5ef-4705-a1e9-d84df717adc8.png)
+3. Once the Crawler is created, then select the crawler and click on **Run Crawler**
 
-3. In the Add permission section, search for _**AmazonRedshiftAllCommandsFullAccess**_ policy. Its an AWS Managed policy so it will be a part of each AWS account. Select this policy and click on _**Next**_
+4. The crawler will execute and complete within few minutes. Once its completed, you will see the number of tables added as 1 as shown in the figure below
 
-![image](https://user-images.githubusercontent.com/17497381/166973961-9a2210a3-4df5-4b43-85a1-f14f5fefdd4f.png)
+![image](https://user-images.githubusercontent.com/17497381/172200496-56c3a3ae-ea9b-4914-adff-6558ea7d23c5.png)
 
-4. On the next page just provide _**Redshift-IAM-Role-1**_ as the name for the IAM role and then click on _**Create Role**_ button.
+5. You can check the table which is created in the Glue Catalog after the crawler is successfull
 
-Congratulations! You have created your IAM role for the Redshift Cluster. Now lets proceed to create a Redshift cluster.
+![image](https://user-images.githubusercontent.com/17497381/172200689-4084ab3f-6004-47e7-80f1-1342ae4271ef.png)
+
+Congratulations! You have created populated the **Glue Data Catalog** with the external table stored on S3 bucket 
 
 
 #### **CREATE S3 BCUKET TO SAVE CSV DATA FILES**
