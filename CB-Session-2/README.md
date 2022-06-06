@@ -1,5 +1,5 @@
 # aws-cb-redshift-boilerplate : Session 2
-This folder is a continuation of Session 1 which you can find in the **CB-Session-1** folder in this same repository. It provides a complete end to end hands-on activity which you can try out on personal AWS account. Follow through the steps mentiooned below carefully to become master of Aamzon Redshift
+This folder is a continuation of Session 1 which you can find in the **CB-Session-1** folder in this same repository. It provides a complete end to end hands-on activity which you can try out on personal AWS account. Follow through the steps mentioned below carefully to become master of Aamzon Redshift
 
 ## **INTRODUCTION**
 
@@ -16,7 +16,9 @@ Amazon Redshift is an enterprise wide secured, fully managed & scalable Data War
 - Data Encryption: at Rest & in-transit
 
 ## **PRE-REQUESITES**
-1. Please make sure that you have following pre-requisites full filled before starting with this hands-on session 
+
+Please make sure that you have following pre-requisites full filled before starting with this hands-on session 
+1. Please go through the Session 1 Lab manual and then start refering to this lab manual as couple of foundational things are already taken care in the presvious sessions Lab manual
 2. You need to have admin access to the AWS account to follow the steps mentioned below
 3. Download the dataset from the Kaggle form [here](https://www.kaggle.com/competitions/nyc-taxi-trip-duration/data). For this you will have to sign-in into your Kaggle account.
 4. Follow the section of Create IAM role as a part of Pre-requisites 
