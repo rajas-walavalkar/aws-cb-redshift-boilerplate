@@ -8,21 +8,17 @@ Amazon Redshift is an enterprise wide secured, fully managed & scalable Data War
 ![image](https://user-images.githubusercontent.com/17497381/166972051-c4d404a4-1192-424c-aeb9-b4880ff9f5fc.png)
 
 **AMAOZN REDSHIFT FEATUERS**
-- Columnar Data storage
-- MPP (Massive Parallel Processing)
 - Concurrency scaling
 - Materialized Views
-- Automatic Caching
-- Data Encryption: at Rest & in-transit
+- Redshift Spectrum
+- External Schemas
+- Workload Management (WLM)
 
 ## **PRE-REQUESITES**
 
 Please make sure that you have following pre-requisites full filled before starting with this hands-on session 
 1. Please go through the Session 1 Lab manual and then start refering to this lab manual as couple of foundational things are already taken care in the presvious sessions Lab manual
 2. You need to have admin access to the AWS account to follow the steps mentioned below
-3. Download the dataset from the github repo from the **CB-Session-2** in the dataset folder and push it to an S3 bucket
-4. Follow the section of Create IAM role as a part of Pre-requisites 
-5. Follow the section of create an S3 bucket and uploading CSV datafiles which will be required while creating tables on Redshift
 
 #### **CREATE A GLUE CRAWLER FOR THE S3 DATASET**
 
@@ -127,145 +123,36 @@ And then run Select * query on the materialized view created to get the joined r
 
 We have completed our Spectrum tutorial if you are following till here.
 
-### **CREATE TABLE & LOAD DATA ON REDSHIFT CLUSTER
+### **WORKLOAD MANAGEMENT CONFIGURATION ON REDSHIFT**
 
-1. Before you start creating tables, lets just connect to the Redshift cluster using _**Query Editor V2**_. For that click on the Query Editor V2 in the Right hand side panel on the Redshift console.
+1. Open up the Redshift console and then click on **Workload management** section in the left hand side panel. Once the Workload management page opens up, you would see a default parameter group which will be already there. Lets create a new parameter group as we cannot update the default parameter group. 
 
-2. This will open up a new tab and you will see the _**Redshift query editor v2**_. On this editor you will see the redshift cluster which we created in the right-hand side Database section.
-
-3. Click on the redshift cluster name and it will automatically connect to you redshift cluster. If it does not connect automatically, then it will ask for user name and password for connection. Please enter the username and password which we used while creating the cluster
-![image](https://user-images.githubusercontent.com/17497381/166977630-90158413-a9ad-4a92-b61c-f7e90a5c3a98.png)
-
-4. Run the following query to Create the table _**taxi_rides**_
-```
-Create Table dev.public.taxi_rides (
-  id VARCHAR(10),
-  vendor_id INTEGER,
-  pickup_datetime TIMESTAMP,
-  dropoff_datetime TIMESTAMP,
-  passenger_count INTEGER,
-  pickup_longitude Decimal(9,6),
-  pickup_latitude Decimal(9,6),
-  dropoff_longitude Decimal(9,6),
-  dropoff_latitude Decimal(9,6),
-  store_and_fwd_flag VARCHAR(1),
-  trip_duration INTEGER,
-  primary key(id))
-  DISTSTYLE KEY
-  DISTKEY (id);
-```
-
-5. Run the following COPY command after successful creation of the table. Make sure that you update the following COPY command with you S3 Bucket name and with the AWS account ID as highlighted below
-```
-COPY dev.public.taxi_rides
-from 's3://aws-redshift-raw-csv/nyc-dataset/train.csv' 
-iam_role 'arn:aws:iam::284377223973:role/Redshift-IAM-Role-1'
-FORMAT AS CSV
-IGNOREHEADER 1 ;
-```
-
-6. After the COPY command is successfully executed, just the check the sample table records if they are properly inserted into the table using a Select * query
-![image](https://user-images.githubusercontent.com/17497381/166978180-119961e7-7372-46d5-ab3a-f93cba6fec48.png)
+![image](https://user-images.githubusercontent.com/17497381/172433478-9f94fc3a-6758-4d6e-96f7-24bb9b966d28.png)
 
 
-### **LETS CREATE TABLE USING VISUAL EDITOR**
+2. Click on the **Create** button and then enter the name of the parameter group and description for the same
+Name - test-parameter-group-wlm
+Decrpiption - test
+By default the parameter groupyou created has a default queue which is an Auto WLM. Lets understand the parameters by clicking on Edit workload group button.
 
-1. Before we create the table using the visual editor 2, lets just drop the table which is already created using the DROP command
-```
-DROP TABLE dev.public.taxi_rides;
-```
-2. Click on the **+ Create** button on the left side panel and then select _**Table**_ option from the list.
-![image](https://user-images.githubusercontent.com/17497381/166978385-408e8912-dfe2-4a84-a7f6-fe620d6f4a03.png)
+3. When you are in the edit option, you can add more queues to the parameter group. Now as we have Auto WLM selected we cannot update the memory config and the concurrency slot for the queue, you can only set the priority and the add query monitroing rules as required.
 
-3. It will open up a modal, then mention the table name _**taxi_rides**_ in the text box provided. Then click on the _**Load from CSV**_ option to import the schema of the table directly rather than adding the columns names manually
+4. If you switch to manual WLM mode for the parameter group, then all the queues are to be configured manually by adding memory and concurrency slots per queues along with the priority and query monitoring options.
 
-4. Further just update the data types of the two columns _**pickup_datetime**_ and _**dropoff_datetime**_ to _**TIMESTAMP**_. Also click on the id column and then click on the radio button of _**Primary key**_.
-  - _Note : Currently the UI option of creating table does not provide a way to add the precision for the decimal data type. So for now we will ignore it._
-![image](https://user-images.githubusercontent.com/17497381/166978617-49687ee9-a53d-42c5-a423-074556c39179.png)
-
-5. Further click on the _**Table Details**_ tab in the modal and then select the _**id**_ columns in the drop down of the _**distribution key**_. Similarly you can set the _**Sort Key**_ for the table accordingly. After this just click on the _**Create table**_ button.
-![image](https://user-images.githubusercontent.com/17497381/166978740-4def029b-512d-408f-b49b-aea77c2e10b5.png)
-
-6. Once the table is created successfully, then lets load the data into the table from the console itself. For this click on the _**Load Data**_ button on the left panel. Click on the _**Browse S3**_ to select the S3 location of the CSV files stored on the S3 bucket.
-
-7. Then Select the IAM role from the drop down list, keep the format as CSV only, click on the _**data conversion parameter**_ and then scroll down to select the option of _**ignore header rows**_ and then select 1 in the given field.
-
-8. In the target table just select the schema and the table name form the drop down as _**public**_ and _**taxi_rides**_ and then click on _**load data**_ button
-![image](https://user-images.githubusercontent.com/17497381/166979051-820699b0-db0a-4ba8-81c8-223317550e46.png)
-
-9. Once the the command successfully completes then just check the data inserted into the table using SELECT * query
-
-
-### **CTAS - Create Table AS Query and UNLOAD command**
-
-1. Lets create a table which provides an aggregated table of the KPIs by date and Hour
-```
-CREATE TABLE  dev.public.taxi_rides_date_hour AS
-Select date(pickup_datetime) as trip_date,
-extract(HOUR from pickup_datetime ) as trip_Hour,
-count(distinct id) as Number_of_trips,
-sum(passenger_count) as total_passenger,
-ROUND(sum(trip_duration)/3600,2) as total_trip_duration_hour, 
-max(trip_duration)/60 as max_trip_duration_minute
-FROM 
-dev.public.taxi_rides
-Where  DATE(pickup_datetime)=DATE(dropoff_datetime)
-Group by 1,2
-Order by 1,2
-```
-2. Once you RUN  the above query it will give you the following table output
-![image](https://user-images.githubusercontent.com/17497381/166979885-7b312a15-74f0-4354-ae1d-600efb1648b8.png)
-
-3. As we have now created the table, lets now unload the content of the table back into S3 bucket which we have created using the UNLOAD command. Before running the UNLOAD query make sure that you update the S3 bucket name and the AWS Account ID in the command as highlighted below
-```
-UNLOAD ('SELECT * FROM dev.public.taxi_rides_date_hour')
-to 's3://aws-redshift-raw-csv/rs-unload-output/' 
-iam_role 'arn:aws:iam::284377223922:role/Redshift-IAM-Role-1'
-HEADER
-CSV;
-```
-4. Once the command executes, you can check your S3 bucket location, you will be able to see the files as shown below
-![image](https://user-images.githubusercontent.com/17497381/166980031-df7a3264-e879-4d2d-97e1-c601d254b44e.png)
-
-
-### **MATERIALIZED VIEWS**
-
-1. Lets create an materialized view instead of the CTAS table that we created in the previous step. The Syntax is very similar to CTAS query.
-```
-CREATE MATERIALIZED VIEW dev.public.mv_date_hour_agg_trips as
-Select date(pickup_datetime) as trip_date,
-extract(HOUR from pickup_datetime ) as trip_Hour,
-count(distinct id) as Number_of_trips,
-sum(passenger_count) as total_passenger,
-ROUND(sum(trip_duration)/3600,2) as total_trip_duration_hour, 
-max(trip_duration)/60 as max_trip_duration_minute
-FROM 
-dev.public.taxi_rides
-Where  DATE(pickup_datetime)=DATE(dropoff_datetime)
-Group by 1,2
-```
-_NOTE : Here if you see that I am using the exact same query which we used in the CTAS query, the only difference that you can see is that I have removed the Order by clause from the end. This is because materialized views does not support the ORDER BY clause as it stores the table output in its memory for faster retrieval._
-
-2. Lets query our Materialized view using SELECT * query.
-![image](https://user-images.githubusercontent.com/17497381/166980294-95e6d36b-1014-4310-a6d7-65f652d75514.png)
-
-3. Further let's say that the original table gets in the new incremental data and loads it into our _**taxi_rides**_ table, so our materialized view data becomes stale and inconsistent. So in this situation, you can refresh the materialized view using a simple query mentioned below or you can use a [**Automated refresh materialized view**](https://docs.aws.amazon.com/redshift/latest/dg/materialized-view-auto-mv.html)
-```
-REFRESH MATERIALIZED VIEW dev.public.mv_date_hour_agg_trips;
-```
+5. Using Query monitoring options you can change the priority of the queires, trigger an alert or abort the queries. You can define the action as required if the montoring condition is staisfied.
 
 ## CONCLUSION
 
-Thus this blog covers the basics of Amazon Redshift and how do you work with Redshift starting from the creation of cluster to the tables and views. Its a very basic blog which will act as a boiler plate for the new users who are working with Amazon Redshift for the first time.
+Thus this blog is a continuation of the previous session, and it gives in depth understanding of the Redshift features like External Scehma, Redshift Spectrum * Workload Management
 
 Once you are well versed with these queries and commands you can get into the depth of the configuration of each and ever command to the query used in this blog. I hope that this blog has helped you to see how easy it is to work with Amazon Redshift service. Happy Learning and Let me know if you have suggestions, feedbacks or questions in the comments section below.
 
 ## REFERENCES
 
-#### 1. [Link to AWS Documentation - Query Editor V2](https://aws.amazon.com/blogs/aws/amazon-redshift-query-editor-v2-web-query-authoring/)
-#### 2. [Link to AWS Documentation - COPY Command](https://docs.aws.amazon.com/redshift/latest/dg/r_COPY.html)
-#### 3. [Link to AWS Documentation - UNLOAD Command](https://docs.aws.amazon.com/redshift/latest/dg/r_UNLOAD.html)
-#### 4. [Link to AWS Documentation - Create Table AS Query (CTAS Query)](https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_TABLE_AS.html)
+#### 1. [Link to AWS Documentation - Redshift Spectrum](https://docs.aws.amazon.com/redshift/latest/dg/c-using-spectrum.html#c-spectrum-overview)
+#### 2. [Link to AWS Documentation - Setting up Glue Crawlers](https://docs.aws.amazon.com/glue/latest/dg/crawler-configuration.html)
+#### 3. [Link to AWS Documentation - Glue Catalog](https://docs.aws.amazon.com/glue/latest/dg/populate-data-catalog.html)
+#### 4. [Link to AWS Documentation - External Schema](https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_EXTERNAL_SCHEMA.html)
 #### 5. [Link to AWS Documentation - Create Materialized Views](https://docs.aws.amazon.com/redshift/latest/dg/materialized-view-create-sql-command.html)
-#### 6. [Link to AWS Documentation - Limitations and Refresh Views](https://docs.aws.amazon.com/redshift/latest/dg/materialized-view-refresh-sql-command.html)
-#### 7. [Link to AWS Documentation - Auto Materialized Views](https://docs.aws.amazon.com/redshift/latest/dg/materialized-view-auto-mv.html)
+#### 6. [Link to AWS Documentation - Workload Management (WLM)](https://docs.aws.amazon.com/redshift/latest/dg/c_workload_mngmt_classification.html)
+#### 7. [Link to AWS Documentation - Auto WLM & Manual WLM](https://docs.aws.amazon.com/redshift/latest/dg/automatic-wlm.html)
