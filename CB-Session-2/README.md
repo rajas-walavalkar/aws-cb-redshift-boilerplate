@@ -88,28 +88,44 @@ SELECT * FROM rs_glue_schema.nyc_latlong_mapping;
 If you are following till this point then, Congratulations! You have successfully created a Redshift Spectrum Table using External **Glue Data Catalog** for the data stored on S3 bucket 
 
 
-### **CREATE A REDSHIFT CLUSTER**
+### **CREATE A MATERIALIZED VIEW TO JOIN LOCAL TABLE WITH SPECTRUM TABLE**
 
-1. Open the Redshift console on your AWS Account and click on _**Clusters**_ option on the left side panel and the click on _**Create Cluster**_
-![image](https://user-images.githubusercontent.com/17497381/166976531-4f32b270-6a4f-4c85-93b7-fa536080a3b2.png)
+1. Now we have two tables with us, one which is a local table which we had loaded using COPY command in our previous session and one which we created in this session as a spectrum table
+Local Table - **dev.public.taxi_rides**
+Spectrum Table - **rs_glue_schema.nyc_latlong_mapping**
 
-2. Please fill in the following configurations details on this page
-    - Cluster identifier - **redshift-cluster-1**
-    - What are you planning to use this cluster for? - Select **Production**
-    - Node Type - **dc2.large**
-    - Number of Nodes - **1**
-    - Admin user name - **test-user**
-    - Admin user password - **Password1234**
+![image](https://user-images.githubusercontent.com/17497381/172410145-41a15416-1074-4e10-9135-e577b43c4cea.png)
 
-3. In the Associated IAM roles section, click on _**Associated IAM role**_ button and then select the IAM role which created previously _**Redshift-IAM-Role-1**_ and then click on Associated IAM role button.
-![image](https://user-images.githubusercontent.com/17497381/166977009-2516b6c6-6428-427e-93dd-6eb719ed26fa.png)
+The **taxi_rides** table have latitude and longitude information for all the rides in NYC and the **nyc_latlong_mapping** have all the zipcode mappings for all the relavant latitude and longitudes present in NYC. So lets create a materialized views which provides the zipcode information for every ride by joining both the above tables
 
-4. Keep the _**Additional Configurations**_ section default and do change anything over there and then just click on _**Create Cluster**_ button
-![image](https://user-images.githubusercontent.com/17497381/166977083-3bb8325c-1a6f-4e8a-b435-7ba487dc05ff.png)
+2. Execute the below query which creates materialized view and joins both the tables
+3. 
+```
+CREATE MATERIALIZED VIEW dev.public.trip_nyc_wtih_zip as
+SELECT 
+id,vendor_id,pickup_datetime,dropoff_datetime,
+passenger_count,pickup_longitude,pickup_latitude,
+dropoff_longitude,dropoff_latitude,
+store_and_fwd_flag,trip_duration, 
+'New York' as state,
+ltp. zipcode as pickup_zipcode,
+ltd. zipcode as dropoff_zipcode
+FROM dev.public.taxi_rides tr 
+INNER JOIN 
+rs_glue_schema.nyc_latlong_mapping ltp
+ON tr. pickup_latitude = ltp. latitude
+AND tr. pickup_longitude = ltp. longitude
+INNER JOIN 
+rs_glue_schema.nyc_latlong_mapping ltd
+ON tr. dropoff_latitude = ltd. latitude
+AND tr. dropoff_longitude = ltd. longitude;
+```
 
-5. Cluster will take couple of minutes to get deployed. Have Patience for a while. Once the cluster is deployed, on the console you will see **Status** changed to **Available** (as shown below)
-![image](https://user-images.githubusercontent.com/17497381/166977162-5c6a4871-0378-492c-a6f7-608a4132ecc6.png)
+And then run Select * query on the materialized view created to get the joined result
 
+![image](https://user-images.githubusercontent.com/17497381/172412004-40faf51a-d721-4deb-9d86-1bdbbb7a9c58.png)
+
+We have completed our Spectrum tutorial if you are following till here.
 
 ### **CREATE TABLE & LOAD DATA ON REDSHIFT CLUSTER
 
