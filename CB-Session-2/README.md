@@ -99,7 +99,7 @@ Spectrum Table - **rs_glue_schema.nyc_latlong_mapping**
 The **taxi_rides** table have latitude and longitude information for all the rides in NYC and the **nyc_latlong_mapping** have all the zipcode mappings for all the relavant latitude and longitudes present in NYC. So lets create a materialized views which provides the zipcode information for every ride by joining both the above tables
 
 2. Execute the below query which creates materialized view and joins both the tables
-3. 
+
 ```
 CREATE MATERIALIZED VIEW dev.public.trip_nyc_wtih_zip as
 SELECT 
